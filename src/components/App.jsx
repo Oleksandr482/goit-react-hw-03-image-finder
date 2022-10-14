@@ -23,15 +23,13 @@ export class App extends Component {
     this.setState({ searchQuery: query, page: 1, images: [] });
   };
   componentDidUpdate = (prevProps, prevState) => {
-    if (
-      prevState.searchQuery !== this.state.searchQuery ||
-      prevState.page !== this.state.page
-    ) {
+    const { searchQuery, page } = this.state;
+    if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.setState({ status: 'pending' });
       const API_KEY = '29336410-bf8336e60ac171a1237415fd3';
       const OPTIONS =
         'image_type=photo&orientation=horizontal&safesearch=true&lang=en&lang=uk&per_page=12';
-      const url = `https://pixabay.com/api/?key=${API_KEY}&q=${this.state.searchQuery}&${OPTIONS}&page=${this.state.page}`;
+      const url = `https://pixabay.com/api/?key=${API_KEY}&q=${searchQuery}&${OPTIONS}&page=${page}`;
 
       fetch(url)
         .then(r => {
@@ -39,9 +37,7 @@ export class App extends Component {
             return r.json();
           }
           Promise.reject(
-            new Error(
-              `Sorry, we did not find any results for "${this.state.searchQuery}"`
-            )
+            new Error(`Sorry, we did not find any results for "${searchQuery}"`)
           );
         })
         .then(r => {
@@ -89,26 +85,23 @@ export class App extends Component {
   };
 
   render() {
+    const { status, images, searchQuery, page, totalPages, isOpen, modalId } =
+      this.state;
     return (
       <>
         <Searchbar onSubmit={this.fetchImages} />
-        {this.state.status === 'rejected' && (
+        {status === 'rejected' && (
           <SearchError
-            message={`Sorry, we did not find any results for "${this.state.searchQuery}"`}
+            message={`Sorry, we did not find any results for "${searchQuery}"`}
           />
         )}
-        {this.state.images.length > 0 && (
-          <ImageGallery
-            results={this.state.images}
-            imageClick={this.imageClick}
-          />
+        {images.length > 0 && (
+          <ImageGallery results={images} imageClick={this.imageClick} />
         )}
-        {this.state.images.length > 0 &&
-          this.state.status === 'resolved' &&
-          this.state.page !== this.state.totalPages && (
-            <Button onClick={this.loadMore} />
-          )}
-        {this.state.status === 'pending' && (
+        {images.length > 0 && status === 'resolved' && page !== totalPages && (
+          <Button onClick={this.loadMore} />
+        )}
+        {status === 'pending' && (
           <ThreeDots
             height="80"
             width="80"
@@ -119,12 +112,8 @@ export class App extends Component {
             visible={true}
           />
         )}
-        {this.state.isOpen && (
-          <Modal
-            id={this.state.modalId}
-            images={this.state.images}
-            onClose={this.toggleModal}
-          />
+        {isOpen && (
+          <Modal id={modalId} images={images} onClose={this.toggleModal} />
         )}
 
         <ToastContainer
