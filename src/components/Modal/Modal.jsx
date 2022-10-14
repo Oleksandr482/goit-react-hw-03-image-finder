@@ -20,12 +20,11 @@ export class Modal extends Component {
   };
 
   render() {
-    const { images, id } = this.props;
-    const image = images.find(image => id === image.id);
+    const { url, alt } = this.props;
     return (
       <div className="Overlay" onClick={this.onClose}>
         <div className="Modal">
-          <img src={image.largeImageURL} alt={image.tags} />
+          <img src={url} alt={alt} />
         </div>
       </div>
     );
@@ -33,13 +32,6 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.number.isRequired,
-      webformatURL: PropTypes.string.isRequired,
-      tags: PropTypes.string.isRequired,
-      largeImageURL: PropTypes.string.isRequired,
-    })
-  ),
-  id: PropTypes.number.isRequired,
+  url: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
 };

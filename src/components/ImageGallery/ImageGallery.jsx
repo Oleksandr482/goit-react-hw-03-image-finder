@@ -2,7 +2,7 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const ImageGallery = ({ results, imageClick }) => {
+export const ImageGallery = ({ results }) => {
   return (
     <ul className="ImageGallery">
       {results.map(result => (
@@ -10,8 +10,7 @@ export const ImageGallery = ({ results, imageClick }) => {
           key={result.id}
           webformatURL={result.webformatURL}
           tegs={result.tags}
-          id={result.id}
-          imageClick={imageClick}
+          largeImageURL={result.largeImageURL}
         />
       ))}
     </ul>
@@ -27,5 +26,4 @@ ImageGallery.propTypes = {
       largeImageURL: PropTypes.string.isRequired,
     })
   ),
-  imageClick: PropTypes.func.isRequired,
 };
